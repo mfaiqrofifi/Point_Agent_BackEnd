@@ -1,0 +1,30 @@
+{
+"Data": [
+    {
+            "id": 1,
+            "nameType": "Chash Out",
+            "img": "https://www.google.com/imgres?imgurl=https%3A%2F%2Fstatik.tempo.co%2Fdata%2F2020%2F01%2F21%2Fid_908083%2F908083_720.jpg&imgrefurl=https%3A%2F%2Fbisnis.tempo.co%2Fread%2F1443620%2Fini-7-fakta-raibnya-uang-nasabah-rp-400-juta-menurut-bri&tbnid=LB9ntpmSJ_v0wM&vet=12ahUKEwjbwczw3Zb1AhWs23MBHWkwDT0QMygAegUIARCoAQ..i&docid=F--i5tkhUiw_BM&w=720&h=405&q=bri&ved=2ahUKEwjbwczw3Zb1AhWs23MBHWkwDT0QMygAegUIARCoAQ",
+            "nominalReward": 100000,
+            "namaBank": "BRI",
+            "jenisOperator": "",
+            "jenisEmoney": "",
+            "poin": 20,
+            "description": "Dapat Duit",
+            "createdAt": "2022-01-04T06:33:28.16+07:00",
+            "updatedAt": "2022-01-04T06:33:28.16+07:00"
+    },
+    {
+        "id": 3,
+        "nameType": "Chash Out",
+        "img": "https://www.google.com/imgres?imgurl=https%3A%2F%2Fstatik.tempo.co%2Fdata%2F2020%2F01%2F21%2Fid_908083%2F908083_720.jpg&imgrefurl=https%3A%2F%2Fbisnis.tempo.co%2Fread%2F1443620%2Fini-7-fakta-raibnya-uang-nasabah-rp-400-juta-menurut-bri&tbnid=LB9ntpmSJ_v0wM&vet=12ahUKEwjbwczw3Zb1AhWs23MBHWkwDT0QMygAegUIARCoAQ..i&docid=F--i5tkhUiw_BM&w=720&h=405&q=bri&ved=2ahUKEwjbwczw3Zb1AhWs23MBHWkwDT0QMygAegUIARCoAQ",
+        "nominalReward": 100000,
+        "namaBank": "BRI",
+        "jenisOperator": "",
+        "jenisEmoney": "",
+        "poin": 20,
+        "description": "Dapat Duit",
+        "createdAt": "2022-01-04T06:33:28.16+07:00",
+        "updatedAt": "2022-01-04T06:33:28.16+07:00"
+    }
+]
+}
