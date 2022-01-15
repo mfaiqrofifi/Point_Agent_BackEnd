@@ -10,8 +10,8 @@ type BaseResonse struct {
 	Meta struct {
 		Status  int    `json:"status"`
 		Message string `json:"message"`
-	}
-	Data interface{}
+	} `json:"meta"`
+	Data interface{} `json:"data"`
 }
 
 func NewSuccesResponse(c echo.Context, data interface{}) error {

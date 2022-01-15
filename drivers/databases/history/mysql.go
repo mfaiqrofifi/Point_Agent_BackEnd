@@ -54,16 +54,20 @@ func (rep MySqlUserRepository) RequestProduct(ctx context.Context, idUser int, i
 func (rep MySqlUserRepository) AllowProduct(ctx context.Context, idUser int, stsatus string) (history.History, error) {
 	var history HistoryDB
 	var user users.Users
-	resultuser := rep.Conn.Model(&history).Where("id = ?", idUser).Update("status", stsatus)
-	if resultuser.Error != nil {
-		return history.ToDomain(), resultuser.Error
-	}
+	// resultuser := rep.Conn.Model(&history).Where("id = ?", idUser).Update("status", stsatus)
+	// if resultuser.Error != nil {
+	// 	return history.ToDomain(), resultuser.Error
+	// }
 	hasil := rep.Conn.First(&history, "id=?", idUser)
 	if history.Type != "Request" {
 		return history.ToDomain(), errors.New("cannot process twice")
 	}
 	if hasil.Error != nil {
 		return history.ToDomain(), hasil.Error
+	}
+	resultuser := rep.Conn.Model(&history).Where("id = ?", idUser).Update("status", stsatus)
+	if resultuser.Error != nil {
+		return history.ToDomain(), resultuser.Error
 	}
 	poinUser := rep.Conn.First(&user, "id=?", history.UsersID)
 	if poinUser.Error != nil {
