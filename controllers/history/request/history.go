@@ -1,7 +1,7 @@
 package request
 
 type HistoryReq struct {
-	IdProduct *int
-	Amount    int
-	Img       string
+	IdProduct *int   `json:"idProduct"`
+	Amount    int    `json:"amount"`
+	Img       string `json:"img"`
 }

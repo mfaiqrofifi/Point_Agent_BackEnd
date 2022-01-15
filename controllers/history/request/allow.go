@@ -1,6 +1,6 @@
 package request
 
 type Allow struct {
-	Id     int
-	Status string
+	Id     int    `json:"id"`
+	Status string `json:"status"`
 }
