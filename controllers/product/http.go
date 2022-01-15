@@ -61,7 +61,11 @@ func (userController UserControllerProduct) ProductKind(c echo.Context) error {
 	if error != nil {
 		return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
 	}
-	return controllers.NewSuccesResponse(c, product)
+	resp := []response.Respjsn{}
+	for _, user := range product {
+		resp = append(resp, response.ToResponse(user))
+	}
+	return controllers.NewSuccesResponse(c, resp)
 }
 
 func (userController UserControllerProduct) Delete(c echo.Context) error {
@@ -73,6 +77,10 @@ func (userController UserControllerProduct) Delete(c echo.Context) error {
 		product, error := userController.UserUseCase.Delete(ctx, addUser.Id)
 		if error != nil {
 			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+		}
+		resp := []response.Respjsn{}
+		for _, user := range product {
+			resp = append(resp, response.ToResponse(user))
 		}
 		return controllers.NewSuccesResponse(c, product)
 	}

@@ -72,10 +72,15 @@ func (userController UserController) DeteilUser(c echo.Context) error {
 	if Admin == "admin" {
 		ctx := c.Request().Context()
 		users, error := userController.UserUseCase.DeteilUser(ctx)
+
 		if error != nil {
 			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
 		}
-		return controllers.NewSuccesResponse(c, users)
+		resp := []resonse.UserLoginResponse{}
+		for _, user := range users {
+			resp = append(resp, resonse.ToResponse(user))
+		}
+		return controllers.NewSuccesResponse(c, resp)
 	}
 	return controllers.NewFailResponse(c, http.StatusUnauthorized, "Anda Bukan Admin")
 }
@@ -83,11 +88,20 @@ func (userController UserController) User(c echo.Context) error {
 	User, IdUser := middleware.GetUser(c)
 	if User == "user" {
 		ctx := c.Request().Context()
-		users, error := userController.UserUseCase.User(ctx, IdUser)
+		user, error := userController.UserUseCase.User(ctx, IdUser)
 		if error != nil {
 			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
 		}
-		return controllers.NewSuccesResponse(c, users)
+		result := resonse.UserLoginResponse{
+			Id:        user.Id,
+			Email:     user.Email,
+			Password:  user.Password,
+			Toko:      user.Toko,
+			Token:     user.Token,
+			UpdatedAt: user.UpdatedAt,
+			CreatedAt: user.CreatedAt,
+		}
+		return controllers.NewSuccesResponse(c, result)
 	}
 	return controllers.NewFailResponse(c, http.StatusUnauthorized, "User Unauthorized")
 }

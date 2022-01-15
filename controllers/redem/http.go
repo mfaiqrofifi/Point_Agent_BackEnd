@@ -121,7 +121,11 @@ func (userController ControlleRedem) Delete(c echo.Context) error {
 		if error != nil {
 			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
 		}
-		return controllers.NewSuccesResponse(c, product)
+		resp := []response.ViewResp{}
+		for _, user := range product {
+			resp = append(resp, response.ToResponse(user))
+		}
+		return controllers.NewSuccesResponse(c, resp)
 	}
 	return controllers.NewFailResponse(c, http.StatusUnauthorized, "Anda Bukan Admin")
 }
