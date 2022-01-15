@@ -32,6 +32,7 @@ import (
 	// "Final_Project/mvp/config"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
@@ -68,6 +69,12 @@ func main() {
 		SecretJWT:       viper.GetString(`jwt.secret`),
 		ExpiresDuration: viper.GetInt(`jwt.expired`),
 	}
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"https://labstack.com", "https://labstack.net"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 	myRepositoryRedem := _repositoriesRedem.NewMysqlRedemRepository(Conn)
 	redemUsecase := _redemUsecase.NewUserUseCase(myRepositoryRedem, timeoutContext)
