@@ -55,11 +55,12 @@ func (rep MySqlUserRepositoryProduct) Delete(ctx context.Context, id int) ([]pro
 
 func (rep MySqlUserRepositoryProduct) Update(ctx context.Context, nameProduct string, poin int, amount string, img string, id int) (product.DomainProdcut, error) {
 	var productdb ProductDB
+	productdb.Id = id
 	productdb.NameProduct = nameProduct
 	productdb.Poin = poin
 	productdb.Amount = amount
 	productdb.Img = img
-	result := rep.Conn.Model(&productdb).Where("id = ?", id).Save(&productdb)
+	result := rep.Conn.Model(productdb).Where("id = ?", id).Updates(productdb)
 	if result.Error != nil {
 		return product.DomainProdcut{}, result.Error
 	}

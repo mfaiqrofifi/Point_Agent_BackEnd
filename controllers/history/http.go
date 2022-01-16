@@ -28,7 +28,7 @@ func (userController UserController) RequestProduct(c echo.Context) error {
 		ctx := c.Request().Context()
 		history, err := userController.UserUseCase.RequestProduct(ctx, UserId, requestProduct.IdProduct, requestProduct.Amount, requestProduct.Img)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, history)
 	}
@@ -43,7 +43,7 @@ func (userController UserController) AllowProduct(c echo.Context) error {
 		ctx := c.Request().Context()
 		history, err := userController.UserUseCase.AllowProduct(ctx, requestProduct.Id, requestProduct.Status)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, history)
 	}
@@ -56,7 +56,7 @@ func (userController UserController) ViewHistoryUser(c echo.Context) error {
 		ctx := c.Request().Context()
 		histori, err := userController.UserUseCase.ViewHistoryUser(ctx, UserId)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, histori)
 	}
@@ -69,7 +69,7 @@ func (userController UserController) ViewRequestUser(c echo.Context) error {
 		ctx := c.Request().Context()
 		histori, err := userController.UserUseCase.ViewRequestUser(ctx)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, histori)
 	}
@@ -84,7 +84,7 @@ func (userController UserController) RequestRedem(c echo.Context) error {
 		ctx := c.Request().Context()
 		history, err := userController.UserUseCase.RequestRedem(ctx, UserId, requestRedem.IdReward, requestRedem.Amount, requestRedem.Identity)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, history)
 	}
@@ -97,7 +97,7 @@ func (userController UserController) ViewRedem(c echo.Context) error {
 		ctx := c.Request().Context()
 		histori, err := userController.UserUseCase.ViewRedem(ctx)
 		if err != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 		}
 		return controllers.NewSuccesResponse(c, histori)
 	}

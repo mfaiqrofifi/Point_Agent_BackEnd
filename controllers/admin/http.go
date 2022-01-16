@@ -31,7 +31,7 @@ func (adminUsecase UserController) Login(c echo.Context) error {
 		Token:    admin.Token,
 	}
 	if err != nil {
-		return controllers.NewFailResponse(c, http.StatusInternalServerError, err.Error())
+		return controllers.NewFailResponse(c, http.StatusBadRequest, err.Error())
 	}
 	return controllers.NewSuccesResponse(c, result)
 }

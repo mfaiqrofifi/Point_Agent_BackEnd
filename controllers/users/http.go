@@ -40,7 +40,7 @@ func (userController UserController) Register(c echo.Context) error {
 		}
 
 		if error != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		return controllers.NewSuccesResponse(c, result)
 	}
@@ -62,7 +62,7 @@ func (userController UserController) LoginUser(c echo.Context) error {
 		CreatedAt: user.CreatedAt,
 	}
 	if error != nil {
-		return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+		return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 	}
 	return controllers.NewSuccesResponse(c, result)
 }
@@ -74,7 +74,7 @@ func (userController UserController) DeteilUser(c echo.Context) error {
 		users, error := userController.UserUseCase.DeteilUser(ctx)
 
 		if error != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		resp := []resonse.UserLoginResponse{}
 		for _, user := range users {
@@ -90,7 +90,7 @@ func (userController UserController) User(c echo.Context) error {
 		ctx := c.Request().Context()
 		user, error := userController.UserUseCase.User(ctx, IdUser)
 		if error != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		result := resonse.UserLoginResponse{
 			Id:        user.Id,

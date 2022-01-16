@@ -86,13 +86,14 @@ func (rep MySqlRedemRepository) DeleteRedem(ctx context.Context, id int) ([]rede
 
 func (rep MySqlRedemRepository) UpdateRedem(ctx context.Context, nameType string, img string, nominalReward int, namaBank string, poin int, description string, id int) (redem.DomainRedem, error) {
 	var redemdb RedemDB
+	redemdb.Id = id
 	redemdb.NameType = nameType
 	redemdb.Img = img
 	redemdb.NominalReward = nominalReward
 	redemdb.NamaBank = namaBank
 	redemdb.Poin = poin
 	redemdb.Description = description
-	result := rep.Conn.Model(&redemdb).Where("id = ?", id).Save(&redemdb)
+	result := rep.Conn.Model(&redemdb).Where("id = ?", id).Updates(redemdb)
 	if result.Error != nil {
 		return redem.DomainRedem{}, result.Error
 	}

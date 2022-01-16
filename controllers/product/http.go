@@ -38,7 +38,7 @@ func (userController UserControllerProduct) ProductAddProduct(c echo.Context) er
 			UpdatedAt:   product.UpdatedAt,
 		}
 		if error != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		return controllers.NewSuccesResponse(c, result)
 	}
@@ -103,7 +103,7 @@ func (userController UserControllerProduct) Update(c echo.Context) error {
 			UpdatedAt:   product.UpdatedAt,
 		}
 		if error != nil {
-			return controllers.NewFailResponse(c, http.StatusInternalServerError, error.Error())
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		return controllers.NewSuccesResponse(c, result)
 	}

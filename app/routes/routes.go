@@ -44,7 +44,7 @@ func (cl *Controllerlist) RoutesRegister(e *echo.Echo) {
 	e.GET("user/history", cl.ControllerHistory.ViewHistoryUser, config)
 	e.GET("viewProduct", cl.UserProductController.ProductKind)
 	e.GET("admin/viewUser", cl.UserController.DeteilUser, config)
-	e.GET("admin/viewRedem", cl.RedemController.ViewRedem)
+	e.GET("viewRedem", cl.RedemController.ViewRedem)
 	e.GET("admin/ViewRequest", cl.ControllerHistory.ViewRequestUser, config)
 	e.GET("admin/viewRedemUser", cl.ControllerHistory.ViewRedem, config)
 	e.GET("user/Profile", cl.UserController.User, config)
