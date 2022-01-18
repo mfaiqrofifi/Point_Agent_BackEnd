@@ -138,6 +138,10 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 	history.User = user
 	history.Reward = redem
 	jumlah := history.Amount * redem.NominalReward
+	result := rep.Conn.Create(&history)
+	if result.Error != nil {
+		return history.ToDomain(), result.Error
+	}
 	if redem.NameType != "Pulsa" {
 		hasil, err := midtrans.GetPembayaranUrl(user.Toko, user.Email, jumlah, history.Id)
 		if err != nil {
@@ -145,10 +149,11 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 		}
 		history.MidtransLink = hasil
 	}
-	result := rep.Conn.Create(&history)
-	if result.Error != nil {
-		return history.ToDomain(), result.Error
+	resultuserMid := rep.Conn.Model(&history).Where("id = ?", history.Id).Update("midtrans_link", history.MidtransLink)
+	if resultuserMid.Error != nil {
+		return history.ToDomain(), resultuserMid.Error
 	}
+	
 	return history.ToDomain(), nil
 }
 
