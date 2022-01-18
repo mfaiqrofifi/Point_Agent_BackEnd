@@ -25,9 +25,9 @@ func (uc *UserUsecase) AddRedemBank(ctx context.Context, nameType string, img st
 	if img == "" {
 		return DomainRedem{}, errors.New("img is empethy")
 	}
-	// if nominalReward == 0 {
-	// 	return DomainRedem{}, errors.New("nominal reward is empethy")
-	// }
+	if nominalReward == 0 {
+		return DomainRedem{}, errors.New("nominal reward is empethy")
+	}
 	if namaBank == "" {
 		return DomainRedem{}, errors.New("nama bank is empethy")
 	}

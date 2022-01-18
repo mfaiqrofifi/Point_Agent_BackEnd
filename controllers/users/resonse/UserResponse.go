@@ -7,7 +7,7 @@ type UserResponseRegist struct {
 	Toko      string    `json:"toko"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
-	Poin      string    `json:"poin"`
+	Poin      int       `json:"poin"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }

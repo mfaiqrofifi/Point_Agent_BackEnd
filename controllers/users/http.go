@@ -37,6 +37,7 @@ func (userController UserController) Register(c echo.Context) error {
 			Email:    user.Email,
 			Password: user.Password,
 			Toko:     user.Toko,
+			Poin:     user.Poin,
 		}
 
 		if error != nil {
@@ -58,6 +59,7 @@ func (userController UserController) LoginUser(c echo.Context) error {
 		Password:  user.Password,
 		Toko:      user.Toko,
 		Token:     user.Token,
+		Poin:      user.Poin,
 		UpdatedAt: user.UpdatedAt,
 		CreatedAt: user.CreatedAt,
 	}
@@ -98,6 +100,7 @@ func (userController UserController) User(c echo.Context) error {
 			Password:  user.Password,
 			Toko:      user.Toko,
 			Token:     user.Token,
+			Poin:      user.Poin,
 			UpdatedAt: user.UpdatedAt,
 			CreatedAt: user.CreatedAt,
 		}

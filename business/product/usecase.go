@@ -1,7 +1,7 @@
 package product
 
 import (
-	"Final_Project/helpers/image"
+	
 	"context"
 	"errors"
 	"time"
@@ -29,7 +29,7 @@ func (uc *UserUsecase) AddProduct(ctx context.Context, nameProduct string, poin 
 	if img == "" {
 		return DomainProdcut{}, errors.New("product name empethy")
 	}
-	img = image.CloudiNary(img)
+	
 	addProduct, err := uc.Repo.AddProduct(ctx, nameProduct, poin, amount, img)
 	if err != nil {
 		return DomainProdcut{}, err

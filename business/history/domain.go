@@ -20,6 +20,7 @@ type History struct {
 	ImageRequest  string
 	NomoHp        string
 	NomorRekening string
+	MidtransLink  string
 	Product       product.DomainProdcut
 	User          users.DomainUser
 	Reward        redem.DomainRedem

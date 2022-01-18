@@ -5,6 +5,7 @@ import (
 	"Final_Project/drivers/databases/product"
 	"Final_Project/drivers/databases/redem"
 	"Final_Project/drivers/databases/users"
+	"Final_Project/helpers/midtrans"
 	"context"
 	"errors"
 
@@ -59,7 +60,7 @@ func (rep MySqlUserRepository) AllowProduct(ctx context.Context, idUser int, sts
 	// 	return history.ToDomain(), resultuser.Error
 	// }
 	hasil := rep.Conn.First(&history, "id=?", idUser)
-	if history.Type != "Request" {
+	if  history.Status!= "Request" {
 		return history.ToDomain(), errors.New("cannot process twice")
 	}
 	if hasil.Error != nil {
@@ -119,6 +120,7 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 	if redem.NameType == "Pulsa" || redem.NameType == "E-Money" {
 		history.NomoHp = identity
 	}
+
 	history.PoinItems = amount * (redem.Poin)
 	UsersUP := rep.Conn.First(&user, "id=?", idUser)
 	if UsersUP.Error != nil {
@@ -132,12 +134,21 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 	if resultuser.Error != nil {
 		return history.ToDomain(), resultuser.Error
 	}
+	
+	history.User = user
+	history.Reward = redem
+	jumlah := history.Amount * redem.NominalReward
+	if redem.NameType != "Pulsa" {
+		hasil, err := midtrans.GetPembayaranUrl(user.Toko, user.Email, jumlah, history.Id)
+		if err != nil {
+			return history.ToDomain(), err
+		}
+		history.MidtransLink = hasil
+	}
 	result := rep.Conn.Create(&history)
 	if result.Error != nil {
 		return history.ToDomain(), result.Error
 	}
-	history.User = user
-	history.Reward = redem
 	return history.ToDomain(), nil
 }
 

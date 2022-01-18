@@ -22,6 +22,7 @@ type HistoryDB struct {
 	ImageRequest  string
 	NomoHp        string
 	NomorRekening string
+	MidtransLink  string
 	Product       product.ProductDB `gorm:"foreignKey:ProductDBID"`
 	User          users.Users       `gorm:"foreignKey:UsersID"`
 	Reward        redem.RedemDB     `gorm:"foreignKey:RedemDBID"`
@@ -43,6 +44,7 @@ func (historyDB *HistoryDB) ToDomain() history.History {
 		ImageRequest:  historyDB.ImageRequest,
 		NomoHp:        historyDB.NomoHp,
 		NomorRekening: historyDB.NomorRekening,
+		MidtransLink:  historyDB.MidtransLink,
 		CreatedAt:     historyDB.CreatedAt,
 		UpdatedAt:     historyDB.UpdatedAt,
 		Product:       historyDB.Product.ToDomain(),
@@ -64,6 +66,7 @@ func FromDomain(domain history.History) HistoryDB {
 		ImageRequest:  domain.ImageRequest,
 		NomoHp:        domain.NomoHp,
 		NomorRekening: domain.NomorRekening,
+		MidtransLink:  domain.MidtransLink,
 		CreatedAt:     domain.CreatedAt,
 		UpdatedAt:     domain.UpdatedAt,
 		Product:       product.FromDomain(domain.Product),

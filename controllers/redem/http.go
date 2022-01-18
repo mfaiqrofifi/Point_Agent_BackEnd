@@ -141,15 +141,15 @@ func (Controller ControlleRedem) Update(c echo.Context) error {
 			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
 		}
 		result := response.Bankresp{
-			Id:       redem.Id,
-			NameType: redem.NameType,
-			Img:      redem.Img,
-			// NominalReward: redem.NominalReward,
-			NamaBank:    redem.NamaBank,
-			Poin:        redem.Poin,
-			Description: redem.Description,
-			CreatedAt:   redem.CreatedAt,
-			UpdatedAt:   redem.UpdatedAt,
+			Id:            redem.Id,
+			NameType:      redem.NameType,
+			Img:           redem.Img,
+			NominalReward: redem.NominalReward,
+			NamaBank:      redem.NamaBank,
+			Poin:          redem.Poin,
+			Description:   redem.Description,
+			CreatedAt:     redem.CreatedAt,
+			UpdatedAt:     redem.UpdatedAt,
 		}
 		return controllers.NewSuccesResponse(c, result)
 	}
