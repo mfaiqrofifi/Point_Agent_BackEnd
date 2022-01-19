@@ -2,6 +2,7 @@ package history
 
 import (
 	"Final_Project/business/history"
+	"Final_Project/drivers/databases/HistoryAdmin"
 	"Final_Project/drivers/databases/product"
 	"Final_Project/drivers/databases/redem"
 	"Final_Project/drivers/databases/users"
@@ -55,12 +56,13 @@ func (rep MySqlUserRepository) RequestProduct(ctx context.Context, idUser int, i
 func (rep MySqlUserRepository) AllowProduct(ctx context.Context, idUser int, stsatus string) (history.History, error) {
 	var history HistoryDB
 	var user users.Users
+	var historyAdmin HistoryAdmin.HistoryAdminDB
 	// resultuser := rep.Conn.Model(&history).Where("id = ?", idUser).Update("status", stsatus)
 	// if resultuser.Error != nil {
 	// 	return history.ToDomain(), resultuser.Error
 	// }
 	hasil := rep.Conn.First(&history, "id=?", idUser)
-	if  history.Status!= "Request" {
+	if history.Status != "Request" {
 		return history.ToDomain(), errors.New("cannot process twice")
 	}
 	if hasil.Error != nil {
@@ -77,6 +79,11 @@ func (rep MySqlUserRepository) AllowProduct(ctx context.Context, idUser int, sts
 	poin := user.Poin + history.PoinItems
 	resultPoin := rep.Conn.Model(&user).Where("id = ?", history.UsersID).Update("poin", poin)
 	if resultPoin.Error != nil {
+		return history.ToDomain(), resultPoin.Error
+	}
+	historyAdmin.Description = "admin has been " + stsatus + " " + user.Toko
+	resultHistory := rep.Conn.Create(&historyAdmin)
+	if resultHistory.Error != nil {
 		return history.ToDomain(), resultPoin.Error
 	}
 	return history.ToDomain(), nil
@@ -134,7 +141,7 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 	if resultuser.Error != nil {
 		return history.ToDomain(), resultuser.Error
 	}
-	
+
 	history.User = user
 	history.Reward = redem
 	jumlah := history.Amount * redem.NominalReward
@@ -153,7 +160,7 @@ func (rep MySqlUserRepository) RequestRedem(ctx context.Context, idUser int, idR
 	if resultuserMid.Error != nil {
 		return history.ToDomain(), resultuserMid.Error
 	}
-	
+
 	return history.ToDomain(), nil
 }
 

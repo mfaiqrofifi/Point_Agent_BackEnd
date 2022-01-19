@@ -2,6 +2,7 @@ package routes
 
 import (
 	_middleware "Final_Project/app/middleware"
+	Historyadmin "Final_Project/controllers/HistoryAdmin"
 	"Final_Project/controllers/admin"
 	"Final_Project/controllers/history"
 	"Final_Project/controllers/product"
@@ -22,6 +23,7 @@ type Controllerlist struct {
 	ControllerAdmin       admin.UserController
 	RedemController       redem.ControlleRedem
 	UserController        users.UserController
+	AdminController       Historyadmin.UserControllerProduct
 	UserProductController product.UserControllerProduct
 }
 
@@ -48,5 +50,6 @@ func (cl *Controllerlist) RoutesRegister(e *echo.Echo) {
 	e.GET("admin/ViewRequest", cl.ControllerHistory.ViewRequestUser, config)
 	e.GET("admin/viewRedemUser", cl.ControllerHistory.ViewRedem, config)
 	e.GET("user/Profile", cl.UserController.User, config)
+	e.GET("admin/HistoryAdmin", cl.AdminController.HistoreyAdmin, config)
 
 }

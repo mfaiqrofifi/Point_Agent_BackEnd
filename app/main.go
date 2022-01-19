@@ -30,6 +30,11 @@ import (
 	"log"
 	"time"
 
+	_hitoryAdmin "Final_Project/business/HistoreyAdmin"
+	_historyControllerAdmin "Final_Project/controllers/HistoryAdmin"
+	_historyAdminDB "Final_Project/drivers/databases/HistoryAdmin"
+	_historyAdminRepository "Final_Project/drivers/databases/HistoryAdmin"
+
 	// "Final_Project/mvp/config"
 
 	"github.com/labstack/echo/v4"
@@ -54,6 +59,7 @@ func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(&_productDB.ProductDB{})
 	db.AutoMigrate(&_redemDB.RedemDB{})
 	db.AutoMigrate(&_historiDB.HistoryDB{})
+	db.AutoMigrate(&_historyAdminDB.HistoryAdminDB{})
 }
 func main() {
 	config := _mySQL.ConfigDB{
@@ -154,6 +160,10 @@ func main() {
 	myRepositoryHistori := _historiRepository.NewMysqlUserRepository(Conn)
 	historyUsecase := _historiUsecase.NewUserUseCase(myRepositoryHistori, timeoutContext)
 	historyController := _historiController.NewUserController(historyUsecase)
+
+	myRepositoryHistoriAdmin := _historyAdminRepository.NewMysqlUserRepositoryProduct(Conn)
+	historyUsecaseAdmin := _hitoryAdmin.NewUserUseCase(myRepositoryHistoriAdmin, timeoutContext)
+	historyControllerAdmin := _historyControllerAdmin.NewUserControllerProduct(historyUsecaseAdmin)
 	routesInit := routes.Controllerlist{
 		ConfigJWT:             configJWT,
 		ControllerHistory:     *historyController,
@@ -161,6 +171,7 @@ func main() {
 		RedemController:       *redemController,
 		UserController:        *userController,
 		UserProductController: *ProductController,
+		AdminController:       *historyControllerAdmin,
 	}
 	routesInit.RoutesRegister(e)
 	log.Fatal(e.Start(viper.GetString("server.address")))
