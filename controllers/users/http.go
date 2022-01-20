@@ -108,3 +108,45 @@ func (userController UserController) User(c echo.Context) error {
 	}
 	return controllers.NewFailResponse(c, http.StatusUnauthorized, "User Unauthorized")
 }
+
+func (userController UserController) Edit(c echo.Context) error {
+	Admin, _ := middleware.GetUser(c)
+	if Admin == "admin" {
+
+		userRegister := request.UserRegisterReqEdit{}
+		c.Bind(&userRegister)
+		ctx := c.Request().Context()
+		user, error := userController.UserUseCase.Edit(ctx, userRegister.Toko, userRegister.Email, userRegister.Password, userRegister.Poin, userRegister.Id)
+		result := resonse.UserResponseRegist{
+			Id:       user.Id,
+			Email:    user.Email,
+			Password: user.Password,
+			Toko:     user.Toko,
+			Poin:     user.Poin,
+		}
+
+		if error != nil {
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
+		}
+		return controllers.NewSuccesResponse(c, result)
+	}
+	return controllers.NewFailResponse(c, http.StatusUnauthorized, "Anda Bukan Admin")
+}
+func (userController UserController) Delete(c echo.Context) error {
+	Admin, _ := middleware.GetUser(c)
+	if Admin == "admin" {
+		ctx := c.Request().Context()
+		addUser := request.UserRegisterReqDelete{}
+		c.Bind(&addUser)
+		product, error := userController.UserUseCase.Delete(ctx, addUser.Id)
+		if error != nil {
+			return controllers.NewFailResponse(c, http.StatusBadRequest, error.Error())
+		}
+		resp := []resonse.UserLoginResponse{}
+		for _, user := range product {
+			resp = append(resp, resonse.ToResponse(user))
+		}
+		return controllers.NewSuccesResponse(c, resp)
+	}
+	return controllers.NewFailResponse(c, http.StatusUnauthorized, "Anda Bukan Admin")
+}

@@ -43,6 +43,8 @@ func (cl *Controllerlist) RoutesRegister(e *echo.Echo) {
 	e.POST("admin/updateProduct", cl.UserProductController.Update, config)
 	e.POST("admin/deleteRedem", cl.RedemController.Delete, config)
 	e.POST("admin/updateRedem", cl.RedemController.Update, config)
+	e.POST("user/updateUser", cl.UserController.Edit, config)
+	e.POST("user/deleteUser", cl.UserController.Delete, config)
 	e.GET("user/history", cl.ControllerHistory.ViewHistoryUser, config)
 	e.GET("viewProduct", cl.UserProductController.ProductKind)
 	e.GET("admin/viewUser", cl.UserController.DeteilUser, config)

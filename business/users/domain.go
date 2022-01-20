@@ -22,6 +22,8 @@ type Usecase interface {
 	LoginUser(ctx context.Context, email string, password string) (DomainUser, error)
 	DeteilUser(ctx context.Context) ([]DomainUser, error)
 	User(ctx context.Context, userId int) (DomainUser, error)
+	Delete(ctx context.Context, id int) ([]DomainUser, error)
+	Edit(ctx context.Context, toko string, email string, password string, poin int, id int) (DomainUser, error)
 }
 
 type Repository interface {
@@ -29,4 +31,6 @@ type Repository interface {
 	LoginUser(ctx context.Context, email string) (DomainUser, error)
 	DeteilUser(ctx context.Context) ([]DomainUser, error)
 	User(ctx context.Context, userId int) (DomainUser, error)
+	Delete(ctx context.Context, id int) ([]DomainUser, error)
+	Edit(ctx context.Context, toko string, email string, password string, poin int, id int) (DomainUser, error)
 }

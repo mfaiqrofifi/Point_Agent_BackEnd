@@ -85,3 +85,32 @@ func (uc *UserUsecase) User(ctx context.Context, userId int) (DomainUser, error)
 	}
 	return user, nil
 }
+
+func (uc *UserUsecase) Edit(ctx context.Context, toko string, email string, password string, poin int, id int) (DomainUser, error) {
+	if email == "" {
+		return DomainUser{}, errors.New("email empethy")
+	}
+	if password == "" {
+		return DomainUser{}, errors.New("password empethy")
+	}
+	if toko == "" {
+		return DomainUser{}, errors.New("toko empethy")
+	}
+	var err error
+	password, err = encript.Hash(password)
+	if err != nil {
+		return DomainUser{}, err
+	}
+	Edit, err := uc.Repo.Edit(ctx, toko, email, password, poin, id)
+	if err != nil {
+		return DomainUser{}, err
+	}
+	return Edit, nil
+}
+func (uc *UserUsecase) Delete(ctx context.Context, id int) ([]DomainUser, error) {
+	user, err := uc.Repo.Delete(ctx, id)
+	if err != nil {
+		return []DomainUser{}, err
+	}
+	return user, nil
+}

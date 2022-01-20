@@ -56,3 +56,30 @@ func (rep MySqlUserRepository) User(ctx context.Context, userId int) (users.Doma
 	}
 	return user.ToDomain(), nil
 }
+func (rep MySqlUserRepository) Edit(ctx context.Context, toko string, email string, password string, poin int, id int) (users.DomainUser, error) {
+	var user Users
+	user.Toko = toko
+	user.Email = email
+	user.Password = password
+	user.Poin = poin
+	result := rep.Conn.Model(&user).Where("id = ?", id).Updates(user)
+	if result.Error != nil {
+		return users.DomainUser{}, result.Error
+	}
+	return user.ToDomain(), nil
+}
+
+func (rep MySqlUserRepository) Delete(ctx context.Context, id int) ([]users.DomainUser, error) {
+	var productdb []Users
+	var productdb1 Users
+	result := rep.Conn.Where("id = ?", id).Delete(&productdb1)
+	if result.Error != nil {
+		return []users.DomainUser{}, result.Error
+	}
+	result1 := rep.Conn.Order("id desc").Find(&productdb)
+	if result1.Error != nil {
+		return []users.DomainUser{}, result.Error
+	}
+	return ToListDeteil(productdb), nil
+
+}
