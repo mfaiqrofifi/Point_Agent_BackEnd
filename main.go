@@ -1,138 +1,178 @@
 package main
 
 import (
-	"Final_Project/config"
-	"Final_Project/routes"
+	_middleware "Final_Project/app/middleware"
+	"Final_Project/app/routes"
+	_productUsecase "Final_Project/business/product"
+	_redemUsecase "Final_Project/business/redem"
+	_userUsecase "Final_Project/business/users"
+	_productControll "Final_Project/controllers/product"
+	_redemControll "Final_Project/controllers/redem"
+	_useController "Final_Project/controllers/users"
+	_mySQL "Final_Project/drivers/databases/mysql"
+	_productDB "Final_Project/drivers/databases/product"
+	_repositoryProduct "Final_Project/drivers/databases/product"
+	_redemDB "Final_Project/drivers/databases/redem"
+	_repositoriesRedem "Final_Project/drivers/databases/redem"
+	_repository "Final_Project/drivers/databases/users"
+	_userDB "Final_Project/drivers/databases/users"
+	"net/http"
+
+	_adminusecase "Final_Project/business/Admin"
+	_admincontroll "Final_Project/controllers/admin"
+	_adminDB "Final_Project/drivers/databases/admin"
+	_adminRepostory "Final_Project/drivers/databases/admin"
+
+	_historiUsecase "Final_Project/business/history"
+	_historiController "Final_Project/controllers/history"
+	_historiDB "Final_Project/drivers/databases/history"
+	_historiRepository "Final_Project/drivers/databases/history"
+	"log"
+	"time"
+
+	_hitoryAdmin "Final_Project/business/HistoreyAdmin"
+	_historyControllerAdmin "Final_Project/controllers/HistoryAdmin"
+	_historyAdminDB "Final_Project/drivers/databases/HistoryAdmin"
+	_historyAdminRepository "Final_Project/drivers/databases/HistoryAdmin"
+
+	// "Final_Project/mvp/config"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
 
-// type User struct {
-// 	Id        int            `gorm:"primaryKey" json:"id"`
-// 	Nama      string         `json:"nama"`
-// 	Umur      int            `json:"umur"`
-// 	Alamat    string         `json:"alamat"`
-// 	CreatedAt time.Time      `json:"createdAt"`
-// 	UpdatedAt time.Time      `json:"uppdatedAt"`
-// 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
-// }
-
-// type BaseResponse struct {
-// 	Code    int
-// 	Message string
-// 	Data    interface{}
-// }
-
-// type Login struct {
-// 	Email    string `json:"email"`
-// 	Password string `json:"password"`
-// }
-// type Register struct {
-// 	Nama   string `json:"nama"`
-// 	Umur   int    `json:"umur"`
-// 	Alamat string `json:"alamat"`
-// }
-
-// var DB *gorm.DB
-
-// func InitDB() {
-// 	dsn := "root:yuleyek@tcp(127.0.0.1:3306)/point?charset=utf8mb4&parseTime=True&loc=Local"
-// 	var err error
-// 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-// 	if err != nil {
-// 		panic("DB Failed Connect")
-// 	}
-// 	Migration()
-// }
-// func Migration() {
-// 	DB.AutoMigrate(&User{})
-// }
-func main() {
-	config.InitDB()
-	e := routes.NewRoute()
-	e.Start(":8000")
-	// e := echo.New()
-	// ev1 := e.Group("v1/")
-	// ev1.GET("users", GetData)
-	// ev1.GET("users/:IdUser", DeteilData)
-	// ev1.POST("login", LoginData)
-	// ev1.POST("register", Userregister)
-	// e.Start(":8000")
+func init() {
+	viper.SetConfigFile(`config.json`)
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+	if viper.GetBool(`debug`) {
+		log.Println("Service RUN on DEBUG mode")
+	}
 }
+func dbMigrate(db *gorm.DB) {
+	db.AutoMigrate(&_adminDB.Admins{})
+	db.AutoMigrate(&_userDB.Users{})
+	db.AutoMigrate(&_productDB.ProductDB{})
+	db.AutoMigrate(&_redemDB.RedemDB{})
+	db.AutoMigrate(&_historiDB.HistoryDB{})
+	db.AutoMigrate(&_historyAdminDB.HistoryAdminDB{})
+}
+func main() {
+	config := _mySQL.ConfigDB{
+		DB_Username: viper.GetString(`database.user`),
+		DB_Password: viper.GetString(`database.pass`),
+		DB_Host:     viper.GetString(`database.host`),
+		DB_Port:     viper.GetString(`database.port`),
+		DB_Database: viper.GetString(`database.name`),
+	}
+	Conn := config.InitialDB()
+	dbMigrate(Conn)
+	e := echo.New()
+	configJWT := _middleware.ConfigJWT{
+		SecretJWT:       viper.GetString(`jwt.secret`),
+		ExpiresDuration: viper.GetInt(`jwt.expired`),
+	}
+	// http.HandleFunc("/index", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.Header().Set("Access-Control-Allow-Origin", "https://www.google.com")
+	// 	w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST, PUT")
+	// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token")
 
-// func Userregister(c echo.Context) error {
-// 	userRegister := Register{}
-// 	c.Bind(&userRegister)
-// 	if userRegister.Nama == "" {
-// 		return c.JSON(http.StatusBadRequest, BaseResponse{
-// 			Code:    http.StatusBadRequest,
-// 			Message: "Namaoi",
-// 			Data:    nil,
-// 		})
-// 	}
-// 	var userDB User
-// 	userDB.Nama = userRegister.Nama
-// 	userDB.Alamat = userRegister.Alamat
-// 	userDB.Umur = userRegister.Umur
-// 	result := DB.Create(&userDB)
-// 	if result.Error != nil {
-// 		return c.JSON(http.StatusInternalServerError, BaseResponse{
-// 			Code:    http.StatusInternalServerError,
-// 			Message: "Namaoi",
-// 			Data:    nil,
-// 		})
-// 	}
-// 	return c.JSON(http.StatusOK, BaseResponse{
-// 		Code:    http.StatusOK,
-// 		Message: "Berhasil",
-// 		Data:    userDB,
-// 	})
-// }
-// func LoginData(c echo.Context) error {
-// 	login := Login{}
-// 	c.Bind(&login)
-// 	return c.JSON(http.StatusOK, BaseResponse{
-// 		Code:    http.StatusOK,
-// 		Message: "Berhasil",
-// 		Data:    login,
-// 	})
-// }
-// func DeteilData(c echo.Context) error {
-// 	Iduser, err := strconv.Atoi(c.Param("IdUser"))
-// 	if err != nil {
-// 		return c.JSON(http.StatusOK, BaseResponse{
-// 			Code:    http.StatusInternalServerError,
-// 			Message: "Tidak konvert",
-// 			Data:    nil,
-// 		})
-// 	}
-// 	return c.JSON(http.StatusOK, BaseResponse{
-// 		Code:    http.StatusOK,
-// 		Message: "Berhasil",
-// 		Data:    User{Id: Iduser},
-// 	})
-// }
-// func GetData(c echo.Context) error {
-// 	// nama := c.QueryParam("nama")
-// 	// alamat := c.QueryParam("address")
-// 	// user := User{}
-// 	// if nama == "" {
-// 	// 	user = User{1, "Faiq", 12, "nganjuk"}
-// 	// } else {
-// 	// 	user = User{1, nama, 12, alamat}
-// 	// }
-// 	userDB := []User{}
-// 	result := DB.Find(&userDB)
-// 	if result.Error != nil {
-// 		if result.Error != gorm.ErrRecordNotFound {
-// 			return c.JSON(http.StatusInternalServerError, BaseResponse{
-// 				Code:    http.StatusInternalServerError,
-// 				Message: "server",
-// 				Data:    nil,
-// 			})
-// 		}
-// 	}
-// 	return c.JSON(http.StatusOK, BaseResponse{
-// 		Code:    http.StatusOK,
-// 		Message: "Berhasil",
-// 		Data:    userDB,
-// 	})
-// }
+	// 	if r.Method == "OPTIONS" {
+	// 		w.Write([]byte("allowed"))
+	// 		return
+	// 	}
+
+	// 	w.Write([]byte("hello"))
+	// })
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000", "http://3.21.75.144:3000", "http://3.21.75.144:3001"},
+		AllowHeaders: []string{echo.HeaderAuthorization, echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
+	// type CORSConfig struct {
+	// 	// Skipper defines a function to skip middleware.
+	// 	Skipper Skipper
+
+	// 	// AllowOrigin defines a list of origins that may access the resource.
+	// 	// Optional. Default value []string{"*"}.
+	// 	AllowOrigins []string `yaml:"allow_origins"`
+
+	// 	// AllowOriginFunc is a custom function to validate the origin. It takes the
+	// 	// origin as an argument and returns true if allowed or false otherwise. If
+	// 	// an error is returned, it is returned by the handler. If this option is
+	// 	// set, AllowOrigins is ignored.
+	// 	// Optional.
+	// 	AllowOriginFunc func(origin string) (bool, error) `yaml:"allow_origin_func"`
+
+	// 	// AllowMethods defines a list methods allowed when accessing the resource.
+	// 	// This is used in response to a preflight request.
+	// 	// Optional. Default value DefaultCORSConfig.AllowMethods.
+	// 	AllowMethods []string `yaml:"allow_methods"`
+
+	// 	// AllowHeaders defines a list of request headers that can be used when
+	// 	// making the actual request. This is in response to a preflight request.
+	// 	// Optional. Default value []string{}.
+	// 	AllowHeaders []string `yaml:"allow_headers"`
+
+	// 	// AllowCredentials indicates whether or not the response to the request
+	// 	// can be exposed when the credentials flag is true. When used as part of
+	// 	// a response to a preflight request, this indicates whether or not the
+	// 	// actual request can be made using credentials.
+	// 	// Optional. Default value false.
+	// 	AllowCredentials bool `yaml:"allow_credentials"`
+
+	// 	// ExposeHeaders defines a whitelist headers that clients are allowed to
+	// 	// access.
+	// 	// Optional. Default value []string{}.
+	// 	ExposeHeaders []string `yaml:"expose_headers"`
+
+	// 	// MaxAge indicates how long (in seconds) the results of a preflight request
+	// 	// can be cached.
+	// 	// Optional. Default value 0.
+	// 	MaxAge int `yaml:"max_age"`
+	//   }
+	//   DefaultCORSConfig = CORSConfig{
+	// 	Skipper:      DefaultSkipper,
+	// 	AllowOrigins: []string{"*"},
+	// 	AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	//   }
+	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
+	myRepositoryRedem := _repositoriesRedem.NewMysqlRedemRepository(Conn)
+	redemUsecase := _redemUsecase.NewUserUseCase(myRepositoryRedem, timeoutContext)
+	redemController := _redemControll.NewUserControllerRedem(redemUsecase)
+
+	myRepositoryProduct := _repositoryProduct.NewMysqlUserRepositoryProduct(Conn)
+	userUseCaseProduct := _productUsecase.NewUserUseCase(myRepositoryProduct, timeoutContext)
+	ProductController := _productControll.NewUserControllerProduct(userUseCaseProduct)
+
+	myRepository := _repository.NewMysqlUserRepository(Conn)
+	userUsecase := _userUsecase.NewUserUseCase(myRepository, timeoutContext, configJWT)
+	userController := _useController.NewUserController(userUsecase)
+
+	myRepositoryAdmin := _adminRepostory.NewMysqlUserRepository(Conn)
+	adminUsecase := _adminusecase.NewUserUseCase(myRepositoryAdmin, timeoutContext, configJWT)
+	adminController := _admincontroll.NewUserController(adminUsecase)
+
+	myRepositoryHistori := _historiRepository.NewMysqlUserRepository(Conn)
+	historyUsecase := _historiUsecase.NewUserUseCase(myRepositoryHistori, timeoutContext)
+	historyController := _historiController.NewUserController(historyUsecase)
+
+	myRepositoryHistoriAdmin := _historyAdminRepository.NewMysqlUserRepositoryProduct(Conn)
+	historyUsecaseAdmin := _hitoryAdmin.NewUserUseCase(myRepositoryHistoriAdmin, timeoutContext)
+	historyControllerAdmin := _historyControllerAdmin.NewUserControllerProduct(historyUsecaseAdmin)
+	routesInit := routes.Controllerlist{
+		ConfigJWT:             configJWT,
+		ControllerHistory:     *historyController,
+		ControllerAdmin:       *adminController,
+		RedemController:       *redemController,
+		UserController:        *userController,
+		UserProductController: *ProductController,
+		AdminController:       *historyControllerAdmin,
+	}
+	routesInit.RoutesRegister(e)
+	log.Fatal(e.Start(viper.GetString("server.address")))
+}

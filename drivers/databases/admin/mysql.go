@@ -19,7 +19,7 @@ func NewMysqlUserRepository(conn *gorm.DB) Admin.Repository {
 
 func (rep MySqlUserRepository) Login(ctx context.Context, username string, password string) (Admin.DomainAdmin, error) {
 	var admin Admins
-	result := rep.Conn.First(&admin, "username = ? AND password = ?", username, password)
+	result := rep.Conn.First(&admin, "user_name = ? AND password = ?", username, password)
 	if result.Error != nil {
 		return Admin.DomainAdmin{}, result.Error
 	}

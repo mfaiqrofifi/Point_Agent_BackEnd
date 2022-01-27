@@ -7,10 +7,10 @@
       "timeout":2
     },
     "database": {
-        "host": "localhost",
+        "host": "dbpoin.cz4jhvvqpv86.us-east-2.rds.amazonaws.com",
         "port": "3306",
-        "user": "root",
-        "pass": "yuleyek",
+        "user": "admin",
+        "pass": "poinagent",
         "name": "point_agent_final"
     },
     "jwt" : {
