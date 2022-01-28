@@ -37,27 +37,27 @@ jobs:
     - name: push image to registry docker hub
       run: docker push mfaiqr/docker_poin2:1.0.2
   
-  # deployment-ec2:
-  #   name: "Deploy to ec2 from registry docker hub"
-  #   runs-on: ubuntu-latest
-  #   needs: build-push-docker
-  #   steps:
-  #     - uses: actions/checkout@v2 
-  #     - name: configuration SSH
-  #       env:
-  #         SSH_USER: ${{ secrets.SSH_USERNAME }}
-  #         SSH_KEY: ${{ secrets.SSH_KEY }}
-  #         SSH_HOST: ${{ secrets.SSH_HOST }}
-  #       run: |
-  #         mkdir -p ~/.ssh/
-  #         echo "$SSH_KEY" > ~/.ssh/social_media.pem
-  #         chmod 400 ~/.ssh/social_media.pem
-  #         cat >>~/.ssh/config <<END
-  #         Host development
-  #           HostName $SSH_HOST
-  #           User $SSH_USER
-  #           IdentityFile ~/.ssh/social_media.pem
-  #           StrictHostKeyChecking=no
-  #         END
-  #     - name: Connect EC2 & Remove All Container & Pull from Registry & Start
-  #       run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull mfaiqr/social_media2:1.0.0 && docker run -d -p 8080:8080 --name social_media mfaiqr/social_media:1.0.0'
+  deployment-ec2:
+    name: "Deploy to ec2 from registry docker hub"
+    runs-on: ubuntu-latest
+    needs: build-push-docker
+    steps:
+      - uses: actions/checkout@v2 
+      - name: configuration SSH
+        env:
+          SSH_USER: ${{ secrets.SSH_USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/poin.pem
+          chmod 400 ~/.ssh/poin.pem
+          cat >>~/.ssh/config <<END
+          Host development
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/poin.pem
+            StrictHostKeyChecking=no
+          END
+      - name: Connect EC2 & Remove All Container & Pull from Registry & Start
+        run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull mfaiqr/docker_poin2:1.0.2 && docker run -d -p 8080:8080 --name myPoin60 mfaiqr/docker_poin2:1.0.2'
